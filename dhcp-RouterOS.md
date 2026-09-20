@@ -1,5 +1,5 @@
 # Сводка
-DHCP сервер в RouterOS состоит из 3х компонентов:
+DHCP сервер в RouterOS настраивается через 3 сущности:
 - IP Pool - диапазон IP адресов
 - DHCP Network - параметры конкретной подсети (какой будет выдаваться gateway, dns-server, domain suffix и т.д.)
 - DHCP Server - сам сервер, который включает в себя предыдущие компоненты
@@ -15,7 +15,7 @@ DHCP сервер в RouterOS состоит из 3х компонентов:
 # Команды для настройки DHCP
 ```bash
 /ip pool add name=X-pool ranges=X.X.X.Y-X.X.X.Z
-/ip dhcp-server network add address X.X.X.X/M gateway X.X.X.1 dns-server X.X.X.1
+/ip dhcp-server network add address=X.X.X.X/M gateway=X.X.X.1 dns-server=X.X.X.1
 /ip dhcp-server add interface=... address-pool=X-pool
 ```
 # Возможные проблемы
