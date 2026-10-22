@@ -81,8 +81,8 @@ SSH — это протокол, который позволяет удален�
 ```bash
    mkdir -p ~/.ssh
    chmod 700 ~/.ssh
-   chmod 600 ~/.ssh/authorized_keys
    cat ~/<файл_ключа>.pub >> ~/.ssh/authorized_keys
+   chmod 600 ~/.ssh/authorized_keys
 ```
 
  
