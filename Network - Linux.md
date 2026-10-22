@@ -84,5 +84,6 @@ SSH — это протокол, который позволяет удален�
    cat ~/<файл_ключа>.pub >> ~/.ssh/authorized_keys
    chmod 600 ~/.ssh/authorized_keys
 ```
+После настройки беспарольного подключения, желательно отключить аутентификацию по паролю. В `sshd_config` необходимо изменить запись с `#PasswordAuthentication yes` на `PasswordAuthentication no`.
 
  
