@@ -6,15 +6,15 @@
 Вывод `ip a` обычно выглядит так:
 
 ```bash
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000 link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00                          
-inet 127.0.0.1/8 scope host lo                          
-valid_lft forever preferred_lft forever                          
-inet6 /128 scope host noprefixroute                          
-valid_lft forever preferred_lft forever                          
-                      
-2: <интерфейс>: <BROADCAST, MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000 link/ether <MAC интерфейса> brd ff:ff:ff:ff:ff:ff                          
-altname enx080027232330                          
-inet <ipv4_unicast/mask> brd <ipv4_broadcast> scope global <интерфейс> valid_lft forever preferred_lft forever                          
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000 link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00                                          
+inet 127.0.0.1/8 scope host lo                                          
+valid_lft forever preferred_lft forever                                          
+inet6 /128 scope host noprefixroute                                          
+valid_lft forever preferred_lft forever                                          
+                                      
+2: <интерфейс>: <BROADCAST, MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000 link/ether <MAC интерфейса> brd ff:ff:ff:ff:ff:ff                                          
+altname enx080027232330                                          
+inet <ipv4_unicast/mask> brd <ipv4_broadcast> scope global <интерфейс> valid_lft forever preferred_lft forever                                          
 inet6 <ipv6_unicast/mask> scope link proto kernel_11 valid_lft forever preferred_lft forever
 ```
 
@@ -30,7 +30,7 @@ inet6 <ipv6_unicast/mask> scope link proto kernel_11 valid_lft forever preferred
 Вывод команды должен быть таким:
 
 ```bash
-default via <IP_роутера> dev <интерфейс> proto static/dhcp   ← Маршрут в интернет (шлюз)                            
+default via <IP_роутера> dev <интерфейс> proto static/dhcp   ← Маршрут в интернет (шлюз)                                            
 <Адрес_сети>/<маска> dev <интерфейс> proto kernel scope link src <Твой_IP> ← Локальная сеть
 ```
 
@@ -45,10 +45,38 @@ default via <IP_роутера> dev <интерфейс> proto static/dhcp   ←
 - State: `LISTEN` — сервис работает и ждет подключений. Если порта нет в списке — сервис упал или не запущен.
 
 ## `tcpdump`
+
 Инструмент, который позволяет просмотреть "подкапотное пространство" работы сети. Данные можно вывести в лог, а затем его проанализировать.
+
 ## `dig`
+
 Инструмент, при помощи которого можно просмотреть информацию о DNS. Параметр `+trace`, позволяет просмотреть весь путь разрешения имени, начиная от корневых серверов.
+
 ## `nslookup`
+
 Инструмент, который позволяет увидеть информацию о домене, IP, авторитативный ли ответ получен или нет.
+
 ### Авторитативный ответ
+
 Авторитативный ответ - это ответ от авторитативного сервера, который, в свою очередь, хранит все записи в своей зоне, в том числе`A` записи разрешения имен и `aliases`.
+
+# SSH (Secure Shell)
+
+SSH - это протокол, который позволяет удаленно управлять компьютером с ОС Linux.
+
+Чтобы можно было подключаться по SSH к компьютеру на Linux, на Linux необходимо первым делом установить пакет
+`openssh-server`.После установки этого пакета появятся конфигурационные файлы по пути `/etc/ssh/` основной файл, с которым будет происходить взаимодействие по настройке подключения по ssh - это `sshd_config`.   
+
+Чтобы подключение просто заработало, необходимо раскомментировать строчку `#Port 22`. По умолчанию подключение работает по 22 порту, но порт можно поменять, но после замены порта его нужно будет явно указывать на клиенте при удаленном подключении `ssh -p <номер порта> login@server`.  
+## Настройка беспарольного подключения
+Для обеспечения безопасного подключения можно настроить аутентификацию при помощи RSA (публичного и приватного ключа).  
+Публичный ключ должен хранится на сервере Linux по пути `/home/<папка пользователя>/.ssh/auhorized_keys`.  
+Приватный ключ хранится на локально у клиента.  
+Чтобы обеспечить вход без ввода пароля нужно сделать следующие действия:
+1. На клиенте нужно сгенерировать ключ rsa, командой `ssh keygen -t rsa`.
+2. Затем, при помощи команды scp на клиенте копируем публичный ключ на сервер `scp <путь где публичный ключ находится> <имя пользователя>@/home/<папка пользователя, на которого планируется заходить>/`
+3. На сервере добавляем запись ключа в `/home/<папка пользователя, на которого планируется заходить>/.ssh/auhorized_keys`. `cat ~/<файл ключа> >> /home/<папка пользователя, на которого планируется заходить>/.ssh/auhorized_keys`. Оператор `>>` добавляет прочитанную `cat` запись в самый конец файла `auhorized_keys`.
+После всех выполненных манипуляций, для обеспечения безопасности желательно отключить аутентификацию по паролю. Запись `#PasswordAuthentication yes` на `PasswordAuthentication no` в sshd_config.
+
+
+ 
