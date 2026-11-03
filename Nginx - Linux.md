@@ -38,22 +38,29 @@ server {
     server_name _;
 
     location / { 
-        root /data/test_site/www
+        root /data/test_site/www;
         try_files $uri $uri/ =404;
     }
 
     location /images/ { 
-        root /data/test_site/resurses/images
+        root /data/test_site/resurses;
         try_files $uri $uri/ =404;
     }
 }
 ```
-Когда пользователь пишет в строку браузера `http://test_site.org/images/logo.png` ngnix берет `/images/` и проверяет по секциям`location`. В первую очередь он будет идти по самым длинным секциям`location`. В нашем примере существует одна такая секция `/images/`, ngnix берет, сравнивает, идет совпадение и происходит привычный нам процесс склейки `путь на сервере` = `root` + `uri из запроса`. `/data/test_site/resurses/images/` + `logo.png` = `/data/test_site/resurses/images/logo.png`
+Когда пользователь пишет в строку браузера `http://test_site.org/images/logo.png` ngnix берет `/images/` и проверяет по секциям`location`. В первую очередь он будет идти по самым длинным секциям`location`. В нашем примере существует одна такая секция `/images/`, ngnix берет, сравнивает, идет совпадение и происходит привычный нам процесс склейки `путь на сервере` = `root` + `uri из запроса`. `/data/test_site/resurses` + `/images/logo.png` = `/data/test_site/resurses/images/logo.png`
 
 #### Команда `try_files $uri $uri/ =404`
 Данная команда - это инструкция для nginx, которая объясняет, как искать файл и что делать, если файла нет.  
-Команда `try_files $uri $uri/ =404` выполняется строго слева направо
-### Reverse Proxy
+Команда `try_files $uri $uri/ =404` выполняется строго слева направо. Когда находится первое совпадение, процесс проверки останавливается.   
+
+Первая проверка `$uri` - это путь запроса пользователя. Например `http://test_page.org/first_page.html`, тут `uri` будет `/first_page.html`. Nginx берет склейку и проверяет, ести ли такой файл на диске.
+Вторая проверка `$uri/`. На этой проверке выясняется, есть ли вообще директория `/`.
+Возврат ошибки `=404`. Если проверка не удовлетворилась, возвращается ошибка 404.
+
+### Конфигурация https сайта
+
+### Конфигурация Reverse Proxy
 
 Reverse Proxy - это механизм "тайной" пересылки трафика на бэкенд.
 
@@ -74,5 +81,6 @@ server {
     }      
 }
 ```
+### Конфигурация https Reverse Proxy
 
  
